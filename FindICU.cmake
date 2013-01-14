@@ -72,16 +72,16 @@ foreach(_icu_component ${IcuComponents})
 endforeach(_icu_component)
 
 # Check components
-if(NOT ICU_FIND_COMPONENTS) # uc required at least
-    set(ICU_FIND_COMPONENTS uc)
+if(NOT IcuComponents) # uc required at least
+  set(IcuComponents uc)
 else()
-    list(APPEND ICU_FIND_COMPONENTS uc)
-    list(REMOVE_DUPLICATES ICU_FIND_COMPONENTS)
-    foreach(_icu_component ${ICU_FIND_COMPONENTS})
-        if(NOT DEFINED "IcuComponents_${_icu_component}")
-            message(FATAL_ERROR "Unknown ICU component: ${_icu_component}")
-        endif()
-    endforeach(_icu_component)
+  list(APPEND IcuComponents uc)
+  list(REMOVE_DUPLICATES IcuComponents)
+  foreach(_icu_component ${IcuComponents})
+    if(NOT DEFINED "IcuComponents_${_icu_component}")
+      message(FATAL_ERROR "Unknown ICU component: ${_icu_component}")
+    endif()
+  endforeach(_icu_component)
 endif()
 
 # Includes
@@ -94,29 +94,29 @@ find_path(
 
 # Check dependencies
 if(PKG_CONFIG_FOUND)
-    set(_components_dup ${ICU_FIND_COMPONENTS})
+    set(_components_dup ${IcuComponents})
     foreach(_icu_component ${_components_dup})
         pkg_check_modules(PC_ICU "icu-${_icu_component}" QUIET)
 
         if(PC_ICU_FOUND)
             foreach(_pc_icu_library ${PC_ICU_LIBRARIES})
                 string(REGEX REPLACE "^icu" "" _pc_stripped_icu_library ${_pc_icu_library})
-                list(APPEND ICU_FIND_COMPONENTS ${_pc_stripped_icu_library})
+                list(APPEND IcuComponents ${_pc_stripped_icu_library})
             endforeach(_pc_icu_library)
         endif(PC_ICU_FOUND)
     endforeach(_icu_component)
-    list(REMOVE_DUPLICATES ICU_FIND_COMPONENTS)
+    list(REMOVE_DUPLICATES IcuComponents)
 endif(PKG_CONFIG_FOUND)
 
 # Check libraries
-foreach(_icu_component ${ICU_FIND_COMPONENTS})
+foreach(_icu_component ${IcuComponents})
     find_library(
-        _icu_lib
-        NAMES ${IcuComponents_${_icu_component}}
-		HINTS ${ICU_LIBRARIES_PATH}
-        DOC "Libraries for ICU"
-    )
-
+      _icu_lib
+      NAMES ${IcuComponents_${_icu_component}}
+      HINTS ${ICU_LIBRARIES_PATH}
+      DOC "Libraries for ICU"
+      )
+    
     string(TOUPPER "${_icu_component}" _icu_upper_component)
     if(_icu_lib-NOTFOUND)
         set("ICU_${_icu_upper_component}_FOUND" FALSE)
@@ -169,7 +169,7 @@ mark_as_advanced(
 )
 
 # IN (args)
-icudebug("ICU_FIND_COMPONENTS")
+icudebug("IcuComponents")
 icudebug("ICU_FIND_REQUIRED")
 icudebug("ICU_FIND_QUIETLY")
 icudebug("ICU_FIND_VERSION")
