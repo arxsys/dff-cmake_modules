@@ -110,39 +110,38 @@ endif(PKG_CONFIG_FOUND)
 
 # Check libraries
 foreach(_icu_component ${IcuComponents})
-    find_library(
-      _icu_lib
-      NAMES ${IcuComponents_${_icu_component}}
-      HINTS ${ICU_LIBRARIES_PATH}
-      DOC "Libraries for ICU"
-      )
+  find_library(
+    _icu_lib
+    NAMES ${IcuComponents_${_icu_component}}
+    HINTS ${ICU_LIBRARIES_PATH}
+    DOC "Libraries for ICU"
+    )
     
-    string(TOUPPER "${_icu_component}" _icu_upper_component)
-    if(_icu_lib-NOTFOUND)
-        set("ICU_${_icu_upper_component}_FOUND" FALSE)
-        set("ICU_FOUND" FALSE)
-    else(_icu_lib-NOTFOUND)
-        set("ICU_${_icu_upper_component}_FOUND" TRUE)
-    endif(_icu_lib-NOTFOUND)
-
+  string(TOUPPER "${_icu_component}" _icu_upper_component)
+  if(_icu_lib-NOTFOUND)
+    set("ICU_${_icu_upper_component}_FOUND" FALSE)
+  else(_icu_lib-NOTFOUND)
+    set("ICU_${_icu_upper_component}_FOUND" TRUE)
     list(APPEND ICU_LIBRARIES ${_icu_lib})
-
-    set(_icu_lib _icu_lib-NOTFOUND) # Workaround
+  endif(_icu_lib-NOTFOUND)
 endforeach(_icu_component)
 
-list(REMOVE_DUPLICATES ICU_LIBRARIES)
+list(LENGTH ICU_LIBRARIES icu_lib_count)
+
+if (icu_lib_count EQUAL 0)
+  set(ICU_FOUND FALSE)
+endif()
 
 if(ICU_FOUND)
-    if(EXISTS "${ICU_INCLUDE_DIRS}/unicode/uvernum.h")
-        file(READ "${ICU_INCLUDE_DIRS}/unicode/uvernum.h" _icu_contents)
-#     else()
-#         todo
-    endif()
+  list(REMOVE_DUPLICATES ICU_LIBRARIES)
+  if(EXISTS "${ICU_INCLUDE_DIRS}/unicode/uvernum.h")
+    file(READ "${ICU_INCLUDE_DIRS}/unicode/uvernum.h" _icu_contents)
+  endif()
 
-    string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MAJOR_NUM *([0-9]+).*" "\\1" ICU_MAJOR_VERSION "${_icu_contents}")
-    string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MINOR_NUM *([0-9]+).*" "\\1" ICU_MINOR_VERSION "${_icu_contents}")
-    string(REGEX REPLACE ".*# *define *U_ICU_VERSION_PATCHLEVEL_NUM *([0-9]+).*" "\\1" ICU_PATCH_VERSION "${_icu_contents}")
-    set(ICU_VERSION "${ICU_MAJOR_VERSION}.${ICU_MINOR_VERSION}.${ICU_PATCH_VERSION}")
+  string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MAJOR_NUM *([0-9]+).*" "\\1" ICU_MAJOR_VERSION "${_icu_contents}")
+  string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MINOR_NUM *([0-9]+).*" "\\1" ICU_MINOR_VERSION "${_icu_contents}")
+  string(REGEX REPLACE ".*# *define *U_ICU_VERSION_PATCHLEVEL_NUM *([0-9]+).*" "\\1" ICU_PATCH_VERSION "${_icu_contents}")
+  set(ICU_VERSION "${ICU_MAJOR_VERSION}.${ICU_MINOR_VERSION}.${ICU_PATCH_VERSION}")
 endif(ICU_FOUND)
 
 if(ICU_INCLUDE_DIRS)
