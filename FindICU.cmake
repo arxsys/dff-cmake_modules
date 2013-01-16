@@ -54,9 +54,14 @@ macro(declare_icu_component _NAME)
     set("IcuComponents_${_NAME}" ${ARGN})
 endmacro(declare_icu_component)
 
-declare_icu_component(data icudata)
+if (WIN32)
+  declare_icu_component(data icudt)
+  declare_icu_component(i18n icuin) # Internationalization library
+else()
+  declare_icu_component(data icudata)
+  declare_icu_component(i18n icui18n) # Internationalization library
+endif ()
 declare_icu_component(uc   icuuc)         # Common and Data libraries
-declare_icu_component(i18n icui18n icuin) # Internationalization library
 declare_icu_component(io   icuio)         # Stream and I/O Library
 declare_icu_component(le   icule)         # Layout library
 declare_icu_component(lx   iculx)         # Paragraph Layout library
@@ -64,6 +69,7 @@ declare_icu_component(lx   iculx)         # Paragraph Layout library
 ########## Public ##########
 set(ICU_FOUND TRUE)
 set(ICU_LIBRARIES )
+set(ICU_DYN_LIBRARIES)
 set(ICU_INCLUDE_DIRS )
 set(ICU_DEFINITIONS )
 foreach(_icu_component ${IcuComponents})
@@ -110,39 +116,60 @@ endif(PKG_CONFIG_FOUND)
 
 # Check libraries
 foreach(_icu_component ${IcuComponents})
-    find_library(
-      _icu_lib
-      NAMES ${IcuComponents_${_icu_component}}
-      HINTS ${ICU_LIBRARIES_PATH}
-      DOC "Libraries for ICU"
-      )
-    
-    string(TOUPPER "${_icu_component}" _icu_upper_component)
-    if(_icu_lib-NOTFOUND)
-        set("ICU_${_icu_upper_component}_FOUND" FALSE)
-        set("ICU_FOUND" FALSE)
-    else(_icu_lib-NOTFOUND)
-        set("ICU_${_icu_upper_component}_FOUND" TRUE)
-    endif(_icu_lib-NOTFOUND)
+  find_library(
+    _icu_lib_${_icu_component}
+    NAMES ${IcuComponents_${_icu_component}}
+    HINTS ${ICU_LIBRARIES_PATH}
+    DOC "Libraries for ICU"
+    )
 
-    list(APPEND ICU_LIBRARIES ${_icu_lib})
-
-    set(_icu_lib _icu_lib-NOTFOUND) # Workaround
+  string(TOUPPER "${_icu_component}" _icu_upper_component)
+  if(_icu_lib STREQUAL _icu_lib-NOTFOUND)
+    set("ICU_${_icu_upper_component}_FOUND" FALSE)
+    set(ICU_FOUND FALSE)
+  else()
+    if (WIN32)
+      file(GLOB dylib "${ICU_DYNLIB_PATH}/${IcuComponents_${_icu_component}}*.dll")
+      list(LENGTH dylib length)
+      if (length GREATER 0)
+	list(GET dylib 0 dylib)
+	list(APPEND ICU_DYN_LIBRARIES ${dylib})
+	set("ICU_${_icu_upper_component}_FOUND" TRUE)
+	list(APPEND ICU_LIBRARIES ${_icu_lib_${_icu_component}})
+      else()
+	set("ICU_${_icu_upper_component}_FOUND" FALSE)
+	set(ICU_FOUND FALSE)
+      endif()
+    else()
+      set("ICU_${_icu_upper_component}_FOUND" TRUE)
+      list(APPEND ICU_LIBRARIES ${_icu_lib_${_icu_component}})
+    endif()
+  endif()
 endforeach(_icu_component)
 
-list(REMOVE_DUPLICATES ICU_LIBRARIES)
-
 if(ICU_FOUND)
-    if(EXISTS "${ICU_INCLUDE_DIRS}/unicode/uvernum.h")
-        file(READ "${ICU_INCLUDE_DIRS}/unicode/uvernum.h" _icu_contents)
-#     else()
-#         todo
-    endif()
+  list(REMOVE_DUPLICATES ICU_LIBRARIES)
+  message(STATUS "Found ICU libraries:")
+  foreach (item ${ICU_LIBRARIES})
+    message("   ${item}")
+  endforeach()
+  if (WIN32)
+    list(REMOVE_DUPLICATES ICU_DYN_LIBRARIES)
+    message(STATUS "Found ICU dynamic libraries:")
+    foreach (item ${ICU_DYN_LIBRARIES})
+      message("   ${item}")
+    endforeach()
+  endif()
+  if(EXISTS "${ICU_INCLUDE_DIRS}/unicode/uvernum.h")
+    file(READ "${ICU_INCLUDE_DIRS}/unicode/uvernum.h" _icu_contents)
+  endif()
 
-    string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MAJOR_NUM *([0-9]+).*" "\\1" ICU_MAJOR_VERSION "${_icu_contents}")
-    string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MINOR_NUM *([0-9]+).*" "\\1" ICU_MINOR_VERSION "${_icu_contents}")
-    string(REGEX REPLACE ".*# *define *U_ICU_VERSION_PATCHLEVEL_NUM *([0-9]+).*" "\\1" ICU_PATCH_VERSION "${_icu_contents}")
-    set(ICU_VERSION "${ICU_MAJOR_VERSION}.${ICU_MINOR_VERSION}.${ICU_PATCH_VERSION}")
+  string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MAJOR_NUM *([0-9]+).*" "\\1" ICU_MAJOR_VERSION "${_icu_contents}")
+  string(REGEX REPLACE ".*# *define *U_ICU_VERSION_MINOR_NUM *([0-9]+).*" "\\1" ICU_MINOR_VERSION "${_icu_contents}")
+  string(REGEX REPLACE ".*# *define *U_ICU_VERSION_PATCHLEVEL_NUM *([0-9]+).*" "\\1" ICU_PATCH_VERSION "${_icu_contents}")
+  set(ICU_VERSION "${ICU_MAJOR_VERSION}.${ICU_MINOR_VERSION}.${ICU_PATCH_VERSION}")
+elseif(ICU_FIND_REQUIRED AND NOT ICU_FIND_QUIETLY)
+  message(FATAL_ERROR "ICU libraries not found or missing. Please specify path to libraries or install them")
 endif(ICU_FOUND)
 
 if(ICU_INCLUDE_DIRS)
