@@ -12,8 +12,7 @@ endif( "${CMAKE_SIZEOF_VOID_P}" EQUAL 4 )
 
 #### Create Global variables used by install targets and cpack
 
-
-if(NOT (${PROJECT_EDITION} STREQUAL ""))
+if(PROJECT_EDITION)
   string(TOLOWER ${PROJECT_EDITION} PROJECT_EDITION_LOWER)
   set(CONSOLE_SCRIPT "dff-${PROJECT_EDITION_LOWER}.py")
   set(GRAPHICAL_SCRIPT "dff-${PROJECT_EDITION_LOWER}-gui.py")
