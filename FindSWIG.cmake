@@ -53,11 +53,6 @@ string(REGEX REPLACE "^([0-9]+)\\.[0-9]+\\.[0-9]+.*" "\\1" SWIG_VERSION_MAJOR "$
 string(REGEX REPLACE "^[0-9]+\\.([0-9]+)\\.[0-9]+.*" "\\1" SWIG_VERSION_MINOR "${SWIG_VERSION}")
 string(REGEX REPLACE "^[0-9]+\\.[0-9]+\\.([0-9]+).*" "\\1" SWIG_VERSION_PATCH "${SWIG_VERSION}")
 
-message(${SWIG_VERSION_MAJOR})
-message(${SWIG_VERSION_MINOR})
-message(${SWIG_VERSION_PATCH})
-
-
 IF(NOT SWIG_FOUND)
   IF(NOT SWIG_FIND_QUIETLY)
     IF(SWIG_FIND_REQUIRED)
