@@ -271,6 +271,7 @@ set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
     message(STATUS "numpy installer: ${NUMPY_INSTALLER}")
     message(STATUS "matplotlib installer: ${MATPLOTLIB_INSTALLER}")
     message(STATUS "PIL installer: ${PIL_INSTALLER}")
+    message(STATUS "Volatility installer: ${VOLATILITY_INSTALLER}")
     
     set(CPACK_NSIS_FULL_INSTALL
 	${CPACK_NSIS_FULL_INSTALL}
@@ -294,10 +295,16 @@ set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
 		Delete \\\"$TEMP\\\\${APSW_INSTALLER}\\\"
 		Goto InstPil
 	InstPil:
-		MessageBox MB_YESNO \\\"Install ${PIL_INSTALLER}? \\\" /SD IDYES IDNO InstVcredist
+		MessageBox MB_YESNO \\\"Install ${PIL_INSTALLER}? \\\" /SD IDYES IDNO InstVolatility
 		File \\\"/oname=$TEMP\\\\${PIL_INSTALLER}\\\" \\\"\\\${INST_DIR}\\\\dff\\\\prerequisites\\\\${PIL_INSTALLER}\\\"
 		ExecWait '\\\"$TEMP\\\\${PIL_INSTALLER}\\\"'
 		Delete \\\"$TEMP\\\\${PIL_INSTALLER}\\\"
+		Goto InstVolatility
+	InstVolatility:
+		MessageBox MB_YESNO \\\"Install ${PIL_INSTALLER}? \\\" /SD IDYES IDNO InstVcredist
+		File \\\"/oname=$TEMP\\\\${VOLATILITY_INSTALLER}\\\" \\\"\\\${INST_DIR}\\\\dff\\\\prerequisites\\\\${VOLATILITY_INSTALLER}\\\"
+		ExecWait '\\\"$TEMP\\\\${VOLATILITY_INSTALLER}\\\"'
+		Delete \\\"$TEMP\\\\${VOLATILITY_INSTALLER}\\\"
 		Goto InstVcredist
 	")
     if (BUILD_UNSUPPORTED)
