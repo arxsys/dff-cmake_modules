@@ -11,7 +11,7 @@ SET(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_CURRENT_SOURCE_DIR}/COPYRIGHT")
 #  ui/gui/gui.py
 #  ui/ui.py
 # See corresponding CMakeLists.txt for CONFIGURE_FILE.
-SET(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR}) 
+SET(CPACK_PACKAGE_VERSION_MAJOR ${PROJECT_VERSION_MAJOR})
 SET(CPACK_PACKAGE_VERSION_MINOR ${PROJECT_VERSION_MINOR})
 SET(CPACK_PACKAGE_VERSION_PATCH ${PROJECT_VERSION_PATCH})
 SET(CPACK_PACKAGE_INSTALL_DIRECTORY "DFF")
@@ -65,7 +65,7 @@ SET(CPACK_NSIS_COMPRESSOR "/SOLID lzma")
 SET(CPACK_GENERATOR "NSIS")
 
 
-if(NOT (${PROJECT_EDITION} STREQUAL ""))
+if(PROJECT_EDITION)
   string(TOLOWER ${PROJECT_EDITION} PROJECT_EDITION_LOWER)
   set(CPACK_SYSTEM_NAME "${PROJECT_EDITION_LOWER}-")
 endif()
@@ -79,7 +79,7 @@ if (WINALL)
 endif()
 
 
-if(NOT (${PROJECT_EDITION} STREQUAL ""))
+if(PROJECT_EDITION)
   set(SHORTCUT_INFO "${PROJECT_EDITION} ")
 else()
   set(SHORTCUT_INFO "")
@@ -263,7 +263,7 @@ set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
     )	
 	
   if (WINALL)
-    add_subdirectory (prerequisites)
+    include("cmake_modules/dff/thirdparty_installers.cmake")
     message(STATUS "python installer: ${PYTHON_INSTALLER}")
     message(STATUS "pyqt installer: ${PYQT_INSTALLER}")
     message(STATUS "vcredist installer: ${VCREDIST_INSTALLER}")
@@ -301,7 +301,7 @@ set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
 		Delete \\\"$TEMP\\\\${PIL_INSTALLER}\\\"
 		Goto InstVolatility
 	InstVolatility:
-		MessageBox MB_YESNO \\\"Install ${PIL_INSTALLER}? \\\" /SD IDYES IDNO InstVcredist
+		MessageBox MB_YESNO \\\"Install ${VOLATILITY_INSTALLER}? \\\" /SD IDYES IDNO InstVcredist
 		File \\\"/oname=$TEMP\\\\${VOLATILITY_INSTALLER}\\\" \\\"\\\${INST_DIR}\\\\dff\\\\prerequisites\\\\${VOLATILITY_INSTALLER}\\\"
 		ExecWait '\\\"$TEMP\\\\${VOLATILITY_INSTALLER}\\\"'
 		Delete \\\"$TEMP\\\\${VOLATILITY_INSTALLER}\\\"
