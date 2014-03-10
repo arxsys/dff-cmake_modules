@@ -42,6 +42,7 @@ set(CMAKE_LIBRARY_PATH "${LIBDIR}")
 # Optional dependencies required version
 set(BFIO_REQUIRED_VERSION "20120425")
 set(PFF_REQUIRED_VERSION "20120802")
+set(VSHADOW_REQUIRED_VERSION "20131209")
 
 
 # Set installation mode, include all items (*.py, ...) Default is development mode
@@ -116,6 +117,7 @@ find_package(AFF)
 find_package(BFIO)
 find_package(EWF)
 find_package(PFF)
+find_package(VSHADOW)
 find_package(TRE)
 find_package(FFmpeg)
 
@@ -167,6 +169,19 @@ if(BFIO_FOUND)
      unset(BFIO_VERSION)
    endif("${BFIO_VERSION}" VERSION_EQUAL "${BFIO_REQUIRED_VERSION}" OR "${BFIO_VERSION}" VERSION_GREATER "${BFIO_REQUIRED_VERSION}")
 endif(BFIO_FOUND)
+
+if(VSHADOW_FOUND)
+   if("${VSHADOW_VERSION}" VERSION_EQUAL "${VSHADOW_REQUIRED_VERSION}" OR "${VSHADOW_VERSION}" VERSION_GREATER "${VSHADOW_REQUIRED_VERSION}")
+     message(STATUS "VSHADOW installed version: ${VSHADOW_VERSION}
+   >= ${VSHADOW_REQUIRED_VERSION} -- yes")
+   else("${VSHADOW_VERSION}" VERSION_EQUAL "${VSHADOW_REQUIRED_VERSION}" OR "${VSHADOW_VERSION}" VERSION_GREATER "${VSHADOW_REQUIRED_VERSION}")
+     message(STATUS "VSHADOW installed version: ${VSHADOW_VERSION}
+   >= ${VSHADOW_REQUIRED_VERSION} -- no")
+     unset(VSHADOW_FOUND)
+     unset(VSHADOW_VERSION)
+   endif("${VSHADOW_VERSION}" VERSION_EQUAL "${VSHADOW_REQUIRED_VERSION}" OR "${VSHADOW_VERSION}" VERSION_GREATER "${VSHADOW_REQUIRED_VERSION}")
+endif(VSHADOW_FOUND)
+
 
 IF (EWF_FOUND)
    message(STATUS "EWF installed version: ${EWF_VERSION}")
