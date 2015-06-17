@@ -332,11 +332,17 @@ set(CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS
       set(CPACK_NSIS_FULL_INSTALL ${CPACK_NSIS_FULL_INSTALL}
 	"
 	InstVcredist:
-		MessageBox MB_YESNO \\\"Install Microsoft Visual Studio DLL dependencies ? \\\" /SD IDYES IDNO
-		File \\\"/oname=$TEMP\\\\${VCREDIST_INSTALLER}\\\" \\\"\\\${INST_DIR}\\\\dff\\\\prerequisites\\\\${VCREDIST_INSTALLER}\\\"
-		ExecWait '\\\"$TEMP\\\\${VCREDIST_INSTALLER}\\\" /q:a'
-		Delete \\\"$TEMP\\\\${VCREDIST_INSTALLER}\\\"
-	")
+		MessageBox MB_YESNO \\\"Install Microsoft Visual Studio 2010 DLL dependencies ? \\\" /SD IDYES IDNO InstVcredist13
+		File \\\"/oname=$TEMP\\\\${VCREDIST10_INSTALLER}\\\" \\\"\\\${INST_DIR}\\\\dff\\\\prerequisites\\\\${VCREDIST10_INSTALLER}\\\"
+		ExecWait '\\\"$TEMP\\\\${VCREDIST10_INSTALLER}\\\" /q:a'
+		Delete \\\"$TEMP\\\\${VCREDIST10_INSTALLER}\\\"
+		Goto InstVcredist13
+	InstVcredist13:
+		MessageBox MB_YESNO \\\"Install Microsoft Visual Studio 2013 DLL dependencies ? \\\" /SD IDYES IDNO
+		File \\\"/oname=$TEMP\\\\${VCREDIST13_INSTALLER}\\\" \\\"\\\${INST_DIR}\\\\dff\\\\prerequisites\\\\${VCREDIST13_INSTALLER}\\\"
+		ExecWait '\\\"$TEMP\\\\${VCREDIST13_INSTALLER}\\\" /q:a'
+		Delete \\\"$TEMP\\\\${VCREDIST13_INSTALLER}\\\"
+        ")
     endif()
 
     set(CPACK_NSIS_FULL_INSTALL ${CPACK_NSIS_FULL_INSTALL}
