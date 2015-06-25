@@ -26,6 +26,9 @@ endif()
 set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake_modules/")
 
 
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/dff/api/exceptions/breakpad")
+
+
 ## Swig We need at least version 2.0.7 of SWIG
 find_package(SWIG REQUIRED)
 if (${SWIG_VERSION_MAJOR} LESS 2 OR (${SWIG_VERSION_MAJOR} EQUAL 2 AND ${SWIG_VERSION_PATCH} LESS 7))
