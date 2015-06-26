@@ -1,3 +1,14 @@
+option(RelWithDebInfo "Enable release with debug information compilation ?" OFF)
+
+if (RelWithDebInfo)
+  message("[x] Enable release with debug information compilation")
+  set(CMAKE_BUILD_TYPE RelWithDebInfo)
+  foreach (FLAG_TYPE EXE MODULE SHARED)
+    string (REPLACE "INCREMENTAL" "INCREMENTAL:NO" FLAG_TMP "${CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO}")
+    set(CMAKE_${FLAG_TYPE}_LINKER_FLAGS_RELWITHDEBINFO "${FLAG_TMP} /OPT:ICF /OPT:REF" )
+  endforeach ()
+endif (RelWithDebInfo)
+
 project (dff)
 
 set(PROJECT_NAME "DFF")
