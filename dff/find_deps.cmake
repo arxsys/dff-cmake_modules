@@ -40,9 +40,10 @@ set(CMAKE_INCLUDE_PATH "${INCLUDEDIR}")
 set(CMAKE_LIBRARY_PATH "${LIBDIR}")
 
 # Optional dependencies required version
-set(BFIO_REQUIRED_VERSION "20120425")
-set(PFF_REQUIRED_VERSION "20120802")
-set(VSHADOW_REQUIRED_VERSION "20131209")
+set(BFIO_REQUIRED_VERSION "20150927")
+set(PFF_REQUIRED_VERSION "20150714")
+set(VSHADOW_REQUIRED_VERSION "20150905")
+set(BDE_REQUIRED_VERSION "20150905")
 
 
 # Set installation mode, include all items (*.py, ...) Default is development mode
@@ -118,6 +119,7 @@ find_package(BFIO)
 find_package(EWF)
 find_package(PFF)
 find_package(VSHADOW)
+find_package(BDE)
 find_package(TRE)
 find_package(FFmpeg)
 
@@ -182,6 +184,18 @@ if(VSHADOW_FOUND)
    endif("${VSHADOW_VERSION}" VERSION_EQUAL "${VSHADOW_REQUIRED_VERSION}" OR "${VSHADOW_VERSION}" VERSION_GREATER "${VSHADOW_REQUIRED_VERSION}")
 endif(VSHADOW_FOUND)
 
+
+if(BDE_FOUND)
+   if("${BDE_VERSION}" VERSION_EQUAL "${BDE_REQUIRED_VERSION}" OR "${BDE_VERSION}" VERSION_GREATER "${BDE_REQUIRED_VERSION}")
+     message(STATUS "BDE installed version: ${BDE_VERSION}
+   >= ${BDE_REQUIRED_VERSION} -- yes")
+   else("${BDE_VERSION}" VERSION_EQUAL "${BDE_REQUIRED_VERSION}" OR "${BDE_VERSION}" VERSION_GREATER "${BDE_REQUIRED_VERSION}")
+     message(STATUS "BDE installed version: ${BDE_VERSION}
+   >= ${BDE_REQUIRED_VERSION} -- no")
+     unset(BDE_FOUND)
+     unset(BDE_VERSION)
+   endif("${BDE_VERSION}" VERSION_EQUAL "${BDE_REQUIRED_VERSION}" OR "${BDE_VERSION}" VERSION_GREATER "${BDE_REQUIRED_VERSION}")
+endif(BDE_FOUND)
 
 IF (EWF_FOUND)
    message(STATUS "EWF installed version: ${EWF_VERSION}")
