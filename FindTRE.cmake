@@ -6,19 +6,19 @@
 #  TRE_VERSION   - the version number of the aff library
 #
 
-FIND_PATH(LIBTRE_INCLUDE_DIR tre.h}
+FIND_PATH(LIBTRE_INCLUDE_DIR tre.h
   PATHS
   ${DEPENDENCIES_INCLUDE_DIR}/tre
   ${LIBTRE_ROOT}/tre
-  ~/Library/Frameworks
-  /Library/Frameworks
-  /usr/local/include
-  /usr/include
-  /sw/include # Fink
-  /opt/local/include # DarwinPorts
-  /opt/csw/include # Blastwave
-  /opt/include
-  /usr/freeware/include
+  ~/Library/Frameworks/tre
+  /Library/Frameworks/tre
+  /usr/local/include/tre
+  /usr/include/tre
+  /sw/include/tre # Fink
+  /opt/local/include/tre # DarwinPorts
+  /opt/csw/include/tre # Blastwave
+  /opt/include/tre
+  /usr/freeware/include/tre
   DOC "Location of LIBTRE Headers"
   )
 
@@ -45,18 +45,20 @@ FIND_LIBRARY(LIBTRE_LIBRARY
 IF (WIN32)
   FILE(GLOB LIBTRE_RUNTIME_LIBRARY ${DEPENDENCIES_RUNTIME_DIR}/tre.dll)
   #SET(LIBTRE_RUNTIME_LIBRARY ${LIBTRE_RUNTIME_LIBRARY})
-  MESSAGE("LIBTRE_RUNTIME_LIBRARY : ${LIBTRE_RUNTIME_LIBRARY}")  
+  MESSAGE("------- LIBTRE_RUNTIME_LIBRARY : ${LIBTRE_RUNTIME_LIBRARY}")  
 ENDIF(WIN32)
 
 
 IF (LIBTRE_LIBRARY AND LIBTRE_INCLUDE_DIR)
   SET(LIBTRE_FOUND 1)
-  if(EXISTS "${TRE_INCLUDE_DIR}/tre-config.h")
-       file(READ "${TRE_INCLUDE_DIR}/tre-config.h" _tre_contents)
+  message("${LIBTRE_INCLUDE_DIR}")
+  if(EXISTS "${LIBTRE_INCLUDE_DIR}/tre-config.h")
+       file(READ "${LIBTRE_INCLUDE_DIR}/tre-config.h" _tre_contents)
        #generally, to match dot you have to escape but cmake complains... so leave the interpreted dot version
        string(REGEX REPLACE ".*# *define *TRE_VERSION *\"([0-9].[0-9].[0-9])\".*" "\\1" TRE_VERSION "${_tre_contents}")
        string(REGEX REPLACE ".*# *define *TRE_APPROX *([0-9]+).*" "\\1" TRE_HAVE_APPROX "${_tre_contents}")
        string(REGEX REPLACE ".*# *define *TRE_WCHAR *([0-9]+).*" "\\1" TRE_HAVE_WCHAR "${_tre_contents}")
        string(REGEX REPLACE ".*# *define *TRE_MULTIBYTE *([0-9]+).*" "\\1" TRE_HAVE_MULTIBYTE "${_tre_contents}")
-     endif(EXISTS "${TRE_INCLUDE_PATH}/tre/tre-config.h")
+   endif(EXISTS "${LIBTRE_INCLUDE_DIR}/tre-config.h")
+   message("Tre version: ${TRE_VERSION}")  
 ENDIF (LIBTRE_LIBRARY AND LIBTRE_INCLUDE_DIR)
