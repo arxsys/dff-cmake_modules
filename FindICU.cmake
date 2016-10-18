@@ -93,8 +93,9 @@ endif()
 # Includes
 find_path(
     ICU_INCLUDE_DIRS
-    NAMES unicode/utypes.h
-	HINTS ${ICU_INCLUDE_PATH}
+    unicode/utypes.h
+    PATHS
+    ${ICU_INCLUDE_PATH}
     DOC "Include directories for ICU"
 )
 
@@ -119,7 +120,9 @@ foreach(_icu_component ${IcuComponents})
   find_library(
     _icu_lib_${_icu_component}
     NAMES ${IcuComponents_${_icu_component}}
-    HINTS ${ICU_LIBRARIES_PATH}
+    PATHS
+    ${ICU_LIBRARIES_PATH}
+    #${DEPENDENCIES_LIBRARIES_DIR}
     DOC "Libraries for ICU"
     )
 
@@ -136,6 +139,7 @@ foreach(_icu_component ${IcuComponents})
 	list(APPEND ICU_DYN_LIBRARIES ${dylib})
 	set("ICU_${_icu_upper_component}_FOUND" TRUE)
 	list(APPEND ICU_LIBRARIES ${_icu_lib_${_icu_component}})
+	SET(ICU_RUNTIME_LIBRARIES ${ICU_RUNTIME_LIBRARIES} ${dylib})
       else()
 	set("ICU_${_icu_upper_component}_FOUND" FALSE)
 	set(ICU_FOUND FALSE)
