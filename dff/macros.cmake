@@ -178,7 +178,7 @@ macro(DFF_CPP_API library_name)
   if ( CMAKE_GENERATOR MATCHES "Visual Studio")
     vs_library_properties(${library_name} ".dll")
     file(APPEND "${CMAKE_BINARY_DIR}/installed_files.log" "${rpath}/${library_name}.dll\n")
-    install(TARGETS ${library_name} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
+    #install(TARGETS ${library_name} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
   elseif (UNIX)
     set_target_properties(${library_name} PROPERTIES
       LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/../"
@@ -198,7 +198,7 @@ macro(DFF_CPP_API library_name)
   if ( CMAKE_GENERATOR MATCHES "Visual Studio")
     vs_library_properties(${SWIG_MODULE_${swig_lib_name}_REAL_NAME} ".pyd")
     file(APPEND "${CMAKE_BINARY_DIR}/installed_files.log" "${rpath}/${SWIG_MODULE_${swig_lib_name}_REAL_NAME}.pyd\n")
-    install (TARGETS ${SWIG_MODULE_${swig_lib_name}_REAL_NAME} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
+    #install (TARGETS ${SWIG_MODULE_${swig_lib_name}_REAL_NAME} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
   elseif (UNIX)
     set_target_properties(${SWIG_MODULE_${swig_lib_name}_REAL_NAME} PROPERTIES
       SKIP_BUILD_RPATH FALSE
@@ -226,7 +226,7 @@ macro(DFF_CPP_MODULE library_name)
   if ( CMAKE_GENERATOR MATCHES "Visual Studio")
     vs_library_properties(${SWIG_MODULE_${library_name}_REAL_NAME} ".pyd")
     file(APPEND "${CMAKE_BINARY_DIR}/installed_files.log" "${rpath}/${SWIG_MODULE_${library_name}_REAL_NAME}.pyd\n")
-    install (TARGETS ${SWIG_MODULE_${library_name}_REAL_NAME} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
+    #install (TARGETS ${SWIG_MODULE_${library_name}_REAL_NAME} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
   elseif (UNIX)
     #set_target_properties(${SWIG_MODULE_${library_name}_REAL_NAME} PROPERTIES
     #  SKIP_BUILD_RPATH FALSE
@@ -286,7 +286,9 @@ macro(install_rule file)
       set_property(GLOBAL PROPERTY PYC_FILES ${pyc_list})
     endif (${ifile} MATCHES "^.*\\.py$")
     log("    install rule : ${CMAKE_CURRENT_BINARY_DIR}/${__FILE__} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath}")
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${__FILE__} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
+    if (UNIX)
+      install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${__FILE__} DESTINATION ${INSTALL_FILE_DESTINATION}/${rpath})
+    endif (UNIX)
   endif (NOT DEVELOP)
 endmacro()
 
