@@ -43,6 +43,5 @@ foreach (pyc_file ${pyc_list})
   log("${pyc_file}")
 endforeach (pyc_file ${pyc_list})
 
-include(CPack)
 ENABLE_TESTING()
 SUBDIRS(testsuite)
